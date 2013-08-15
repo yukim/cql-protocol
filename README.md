@@ -19,14 +19,16 @@ these awesome libraries:
 * node-uuid
 * ipaddr.js
 * jsbn
-* long
 
 and
 
 * node-tap (for testing)
 
-## What't not included (yet)
+## What's not included (yet)
 
 * Message compression
 * Serializing RESULT message
 
+## Lisence
+
+MIT
