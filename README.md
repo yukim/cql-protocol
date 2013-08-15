@@ -1,5 +1,7 @@
 # cql-protocol
 
+[![Build Status](https://travis-ci.org/yukim/cql-protocol.png)](https://travis-ci.org/yukim/cql-protocol)
+
 `cql-protocol` is a library which implements Apache Cassandra's native CQL protocol spec v1 and v2 (almost) completely in pure javascript.
 
 ## Building block for Apache Cassandra drivers
