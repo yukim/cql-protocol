@@ -2,6 +2,25 @@ var test = require('tap').test,
     types = require('../lib/types');
 
 test('test ser/de', function(t) {
+  t.test('ascii type', function(t) {
+    var type = types.ascii,
+        serialized,
+        deserialized;
+
+    serialized = type.serialize(null);
+    t.type(serialized, 'Buffer', 'return type of serialize shoud be Buffer');
+    t.equal(serialized.length, 0, 'serializing null should have Buffer of length 0');
+
+    serialized = type.serialize('abc');
+    t.equal(serialized.length, 3, 'serializing "abc" should have Buffer of length 3');
+    deserialized = type.deserialize(serialized);
+    t.equal(deserialized, 'abc', 'deserialized Buffer should be equal to original');
+
+    deserialized = type.deserialize(null);
+    t.equal(deserialized, null, 'deserializing null should return null');
+    t.end();
+  });
+
   t.test('bigint', function(t) {
     var buf = types.bigint.serialize(100);
     t.equal(buf.length, 8);
@@ -44,6 +63,29 @@ test('test ser/de', function(t) {
 
     t.equal(types['boolean'].deserialize(null), false, 'deserializing null should be false');
 
+    t.end();
+  });
+
+  t.test('decimal type', function(t) {
+    var type = types.decimal,
+        patterns,
+        i,
+        serialized,
+        deserialized;
+
+    serialized = type.serialize(null);
+    t.type(serialized, 'Buffer', 'return type of serialize shoud be Buffer');
+    t.equal(serialized.length, 0, 'serializing null should have Buffer of length 0');
+
+    patterns = ['123.456', '-123.456', '123.000', '123', '0', '0.000123', '-0.000123'];
+    for (i = 0; i < patterns.length; i++) {
+      serialized = type.serialize(patterns[i]);
+      deserialized = type.deserialize(serialized);
+      t.equal(deserialized, patterns[i], 'deserialized Buffer should be equal to original');
+    }
+
+    deserialized = type.deserialize(null);
+    t.equal(deserialized, null, 'deserializing null should return null');
     t.end();
   });
 
