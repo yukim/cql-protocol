@@ -337,6 +337,43 @@ test('test ser/de messages', function(t) {
     serde.sendMessage(message);
   });
 
+  t.test('mesasges.SplitChunk', function(t) {
+
+    var message = new protocol.messages.Query();
+    message.query = 'SELECT * FROM table';
+    message.options.pageSize = 5;
+    message.options.pagingState = new Buffer('dummy paging state');
+
+    serde.once('message', function(received) {
+      t.type(received, typeof message);
+      t.equal(received.opcode, message.opcode);
+      t.equal(received.query, message.query);
+      t.equal(received.options.consistencyLevel, 1);
+      t.equal(received.options.pageSize, 5);
+      t.same(received.options.pagingState, new Buffer('dummy paging state'));
+      t.end();
+    });
+
+    var header = new Buffer(8);
+    header.writeUInt8(2, 0);
+    header.writeUInt8(message.flags, 1);
+    header.writeInt8(message.streamId, 2);
+    header.writeUInt8(message.opcode, 3);
+
+    var buffer = message.encode(2);
+
+    header.writeUInt32BE(buffer.length, 4);
+
+    // split head chunk
+    serde.push(header.slice(0, 4));
+    serde.push(header.slice(4));
+    // split body chunk
+    serde.push(buffer.slice(0, 10));
+    serde.push(buffer.slice(10, 20));
+    serde.push(buffer.slice(20));
+
+  });
+
   t.test("teardown", function (t) {
     serde.shutdown();
     t.end();
