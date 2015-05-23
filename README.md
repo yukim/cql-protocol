@@ -6,8 +6,8 @@
 
 ## Building block for Apache Cassandra drivers
 
-This library is intended to be used by driver authors(including myself), not by users.
-You can use this library to build your own Apache Cassandra client or even pseudo-server for testitng.
+This library is intended to be used by driver authors (including myself), not by users.
+You can use this library to build your own Apache Cassandra client or even pseudo-server for testing.
 
 ## Getting started
 
